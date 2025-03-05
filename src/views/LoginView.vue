@@ -1,5 +1,5 @@
 <script setup>
-import LoginField from '../components/LoginField.vue'
+import InputField from '../components/InputField.vue'
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router'
 const username = ref('');
 const password = ref('');
 const router = useRouter();
+const isPasswordVisible = ref(false);
 
 const submitForm = async () => {
     const formData = {
@@ -32,7 +33,18 @@ const submitForm = async () => {
     <main class="text-center">
         <form @submit.prevent="submitForm" class="form-signin">
             <h1>Connexion</h1>
-            <LoginField v-model:username="username" v-model:password="password" />
+            <InputField
+                inputId="inputUsername"
+                inputType="text"
+                inputPlaceHolder="Nom d'utilisateur"
+                v-model="username"
+            />
+            <InputField
+                inputId="inputPwd"
+                :inputType="isPasswordVisible ? 'text' : 'password'"
+                inputPlaceHolder="Mot de passe"
+                v-model="password"
+            />
             <button type="submit" class="btn btn-lg btn-dark btn-block">Me connecter</button>
         </form>
     </main>
