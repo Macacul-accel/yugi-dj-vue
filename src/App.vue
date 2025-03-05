@@ -5,7 +5,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <header>
-    <!-- Navbar yugi-django -->
+    <!-- Navbar -->
   </header>
 
   <RouterView />
