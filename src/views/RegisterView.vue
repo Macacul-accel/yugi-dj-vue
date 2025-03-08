@@ -1,14 +1,16 @@
 <script setup>
 import InputField from '../components/InputField.vue'
 import { ref } from 'vue'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth.js';
 
+const authStore = useAuthStore();
 const username = ref('');
 const password = ref('');
 const password_confirmation = ref('');
 const router = useRouter();
 const isPasswordVisible = ref(false);
+const errorMessage = ref('');
 
 const submitForm = async () => {
     const formData = {
@@ -16,19 +18,23 @@ const submitForm = async () => {
         password: password.value,
         password2: password_confirmation.value,
     };
-
-    try {
-        const response = await axios.post('/register', formData);
+    const registered = await authStore.register(formData);
+    if (!registered) {
+        errorMessage.value = authStore.errorMessage
+    } else {
         router.push('/')
-    } catch (error) {
-        alert(error.response?.data || error.message);
     }
 }
 </script>
 
 <template>
-    <main class="text-center">
-        <form @submit.prevent="submitForm" class="form-signin">
+    <div class="position-fixed" style="top: 10px; left:10px;">
+        <RouterLink to="/">
+            <i class="fas fa-arrow-left"></i> Retour à la page d'accueil
+        </RouterLink>
+    </div>
+    <main class="form-signin w-100 m-auto">
+        <form @submit.prevent="submitForm">
             <h1>Inscription</h1>
             <InputField
                 inputId="inputUsername"
@@ -52,11 +58,15 @@ const submitForm = async () => {
                 <input class="form-check-input" type="checkbox" id="showPwd" v-model="isPasswordVisible">
                 <label class="form-check-label" for="showPwd">Afficher le mot de passe</label>
             </div>
-            <button type="submit" class="btn btn-lg btn-dark btn-block">M'inscrire</button>
+            <p class="mb-2"><RouterLink to="login">J'ai déjà un compte</RouterLink></p>
+            <button type="submit" :disabled="authStore.isSubmitting" class="btn btn-dark w-100">M'inscrire</button>
+            <br>
+            <ul
+            v-if="errorMessage"
+            v-for="error in errorMessage" 
+            :key="error"
+            class="text-danger"
+            >{{ error }}</ul>
         </form>
     </main>
-    <!-- Sign In card -->
-
-    <!-- toggle button to view password and confirm password-->
-
 </template>

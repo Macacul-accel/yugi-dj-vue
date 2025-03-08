@@ -1,13 +1,15 @@
 <script setup>
 import InputField from '../components/InputField.vue'
 import { ref } from 'vue'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth.js';
 
+const authStore = useAuthStore();
 const username = ref('');
 const password = ref('');
 const router = useRouter();
 const isPasswordVisible = ref(false);
+const errorMessage = ref('');
 
 const submitForm = async () => {
     const formData = {
@@ -15,23 +17,23 @@ const submitForm = async () => {
         password: password.value,
     };
 
-    try {
-        const response = await axios.post('/register', formData);
+    const loggedIn = await authStore.login(formData);
+    if (!loggedIn) {
+        errorMessage.value = authStore.errorMessage
+    } else {
         router.push('/')
-    } catch (error) {
-        alert(error.response?.data || error.message);
     }
 }
 </script>
 
 <template>
     <div class="position-fixed" style="top: 10px; left:10px;">
-        <a href="#" @click.prevent="router.push('/home')">
-            <i class="bi bi-arrow-left"></i>Retour à la page d'accueil
-        </a>
+        <RouterLink to="/">
+            <i class="fas fa-arrow-left"></i> Retour à la page d'accueil
+        </RouterLink>
     </div>
-    <main class="text-center">
-        <form @submit.prevent="submitForm" class="form-signin">
+    <main class="form-signin w-100 m-auto">
+        <form @submit.prevent="submitForm">
             <h1>Connexion</h1>
             <InputField
                 inputId="inputUsername"
@@ -40,16 +42,24 @@ const submitForm = async () => {
                 v-model="username"
             />
             <InputField
-                inputId="inputPwd"
+                inputId="inputSecondPwd"
                 :inputType="isPasswordVisible ? 'text' : 'password'"
                 inputPlaceHolder="Mot de passe"
                 v-model="password"
             />
-            <button type="submit" class="btn btn-lg btn-dark btn-block">Me connecter</button>
+            <div class="form-check form-switch py-2">
+                <input class="form-check-input" type="checkbox" id="showPwd" v-model="isPasswordVisible">
+                <label class="form-check-label" for="showPwd">Afficher le mot de passe</label>
+            </div>
+            <p class="mb-2"><RouterLink to="/register">Je n'ai pas encore de compte</RouterLink></p>
+            <button type="submit" :disabled="authStore.isSubmitting" class="btn btn-dark w-100">Me connecter</button>
+            <br>
+            <ul
+            v-if="errorMessage"
+            v-for="error in errorMessage" 
+            :key="error"
+            class="text-danger"
+            >{{ error }}</ul>
         </form>
     </main>
-    <!-- Sign In card -->
-
-    <!-- toggle button to view password and confirm password-->
-
 </template>
