@@ -56,10 +56,8 @@ const submitForm = async () => {
             <br>
             <ul
             v-if="errorMessage"
-            v-for="error in errorMessage" 
-            :key="error"
             class="text-danger"
-            >{{ error }}</ul>
+            >{{ errorMessage }}</ul>
         </form>
     </main>
 </template>

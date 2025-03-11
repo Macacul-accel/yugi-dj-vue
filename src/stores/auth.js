@@ -18,13 +18,13 @@ export const useAuthStore = defineStore('auth', () => {
                 token.value = response.data.token
                 user.value = formData.username
                 localStorage.setItem('token', token.value)
-                errorMessage.value = ''
+                errorMessage.value = []
                 return true
             }
         } catch (error) {
-            console.log("Full error object:", error);
-            console.log("Error response:", error.response);
-            errorMessage.value = "Une erreur est survenue, veuillez réessayer"
+            if (error.response.status === 401) {
+                errorMessage.value = "Nom d'utilisateur ou mot de passe incorrect"
+            }
             return false
         } finally {
             isSubmitting.value = false
@@ -36,7 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response = await axios.post('/register/', formData);
             if (response.status === 201) {
-                errorMessage.value = ''
+                errorMessage.value = []
                 return true
             }
         } catch (error) {
@@ -56,7 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
                 user.value = null
                 localStorage.removeItem('token')
                 token.value = null
-                errorMessage.value = ''
+                errorMessage.value = []
                 return true
             }
         } catch (error) {

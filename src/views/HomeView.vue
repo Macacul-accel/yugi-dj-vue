@@ -1,9 +1,9 @@
 <script setup>
 import NavBar from '../components/NavBar.vue';
 import { useAuthStore } from '../stores/auth';
+import { RouterLink } from 'vue-router';
 
 const authStore = useAuthStore();
-console.log(authStore.user)
 
 </script>
 

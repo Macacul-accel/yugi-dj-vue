@@ -24,7 +24,7 @@ const toLogOut = async () => {
                 <RouterLink to="/cards" class="nav-link fw-bold py-1 px-0" active-class="active">Cards</RouterLink>
                 <RouterLink to="/decks" class="nav-link fw-bold py-1 px-0" active-class="active">Decks</RouterLink>
                 <RouterLink to="/features" class="nav-link fw-bold py-1 px-0" active-class="active">Features</RouterLink>
-                <button 
+                <a
                     v-show="authStore.isAuthenticated"
                     type="button"
                     class="nav-link fw-bold py-1 px-0"
@@ -32,7 +32,7 @@ const toLogOut = async () => {
                     @click.prevent="toLogOut"
                 >
                 Déconnexion
-                </button>
+                </a>
             </nav>
         </div>
     </header>
@@ -40,7 +40,7 @@ const toLogOut = async () => {
         <div id="logoutToast" class="toast text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
-                    Déconnexion réussi
+                    Déconnecté
                 </div>
                 <button type="button" class="btn-close button close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>

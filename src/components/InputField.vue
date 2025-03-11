@@ -1,24 +1,25 @@
 <script setup>
-const props = defineProps([
-    'inputId',
-    'inputType',
-    'inputPlaceHolder',
-    'modelValue',
-]);
+const props = defineProps({
+    inputId: String,
+    inputType: String,
+    inputPlaceHolder: String,
+    modelValue: String,
+});
+
 const emit = defineEmits(['update:modelValue']);
 </script>
 
 <template>
     <div class="form-floating">
         <input
-            :type="props.inputType"
-            :id="props.inputId"
+            :type="inputType"
+            :id="inputId"
             class="form-control"
-            :placeholder="props.inputPlaceHolder"
-            :value="props.modelValue"
+            :placeholder="inputPlaceHolder"
+            :value="modelValue"
             @input="emit('update:modelValue', $event.target.value)"
             required
         >
-        <label :for="props.inputId">{{ props.inputPlaceHolder }}</label>
+        <label :for="inputId">{{ inputPlaceHolder }}</label>
     </div>
 </template>
