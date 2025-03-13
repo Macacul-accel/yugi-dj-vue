@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 
 export const useAuthStore = defineStore('auth', () => {
-    const user = ref(null);
+    const user = ref(localStorage.getItem('user') || null);
     const token = ref(localStorage.getItem('token') || null);
     const errorMessage = ref([]);
     const isSubmitting = ref(false);
@@ -16,6 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
 
             if (response.data.token) {
                 token.value = response.data.token
+                localStorage.setItem('user', formData.username)
                 user.value = formData.username
                 localStorage.setItem('token', token.value)
                 errorMessage.value = []

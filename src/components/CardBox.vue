@@ -1,16 +1,13 @@
 <script setup>
-import { defineProps } from "vue";
-import { useFilterStore } from "../stores/filters";
-
-const filtersStore = useFilterStore();
 const props = defineProps({
-  cards: Array,
+  cards: Object,
+  loading: Boolean,
 });
 </script>
 
 <template>
   <!-- Card list -->
-  <div v-if="filtersStore.isloading" class="loader">Chargement en cours...</div>
+  <div v-if="loading" class="loader">Chargement en cours...</div>
   <div v-else>
     <div v-if="cards" class="border rounded">
       <div v-for="card in cards" :key="card.id" class="border px-2">
@@ -18,11 +15,11 @@ const props = defineProps({
           <!-- Card image -->
           <div class="col-sm-6 col-md-4 my-3 d-flex justify-content-center">
             <img
-              :src="card.image"
+              :src="card.image_url || '../assets/default.jpg'"
               :alt="card.name"
               loading="lazy"
-              width="270"
-              height="370"
+              width="270px"
+              height="370px"
             />
           </div>
 

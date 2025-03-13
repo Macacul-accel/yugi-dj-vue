@@ -33,6 +33,14 @@ onMounted(() => {
       @next-page="filtersStore.fetchNextPage"
     />
 
-    <CardBox :cards="filtersStore.cards" />
+    <CardBox :cards="filtersStore.cards" :loading="filtersStore.isLoading" />
+
+    <CardsPagination
+      :previous="filtersStore.previousPage"
+      :next="filtersStore.nextPage"
+      :count="filtersStore.count"
+      @previous-page="filtersStore.fetchPreviousPage"
+      @next-page="filtersStore.fetchNextPage"
+    />
   </div>
 </template>
