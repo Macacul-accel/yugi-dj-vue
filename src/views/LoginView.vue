@@ -19,19 +19,23 @@ const submitForm = async () => {
 
     const loggedIn = await authStore.login(formData);
     if (!loggedIn) {
+        // transform into danger toast
         errorMessage.value = authStore.errorMessage
     } else {
         router.push('/')
+        // add success toast
     }
 }
 </script>
 
 <template>
+    <!-- Redirect home link -->
     <div class="position-fixed" style="top: 10px; left:10px;">
         <RouterLink to="/">
             <i class="fas fa-arrow-left"></i> Retour à la page d'accueil
         </RouterLink>
     </div>
+    <!-- Login Card -->
     <main class="form-signin w-100 m-auto">
         <form @submit.prevent="submitForm">
             <h1>Connexion</h1>
@@ -54,6 +58,7 @@ const submitForm = async () => {
             <p class="mb-2"><RouterLink to="/register">Je n'ai pas encore de compte</RouterLink></p>
             <button type="submit" :disabled="authStore.isSubmitting" class="btn btn-dark w-100">Me connecter</button>
             <br>
+            <!-- need to transform this into Toast -->
             <ul
             v-if="errorMessage"
             class="text-danger"

@@ -20,19 +20,23 @@ const submitForm = async () => {
     };
     const registered = await authStore.register(formData);
     if (!registered) {
+        // transform into danger toast
         errorMessage.value = authStore.errorMessage
     } else {
-        router.push('/')
+        router.push('/login')
+        // add success toast
     }
 }
 </script>
 
 <template>
+    <!-- Redirect home link -->
     <div class="position-fixed" style="top: 10px; left:10px;">
         <RouterLink to="/">
             <i class="fas fa-arrow-left"></i> Retour à la page d'accueil
         </RouterLink>
     </div>
+    <!-- Register card -->
     <main class="form-signin w-100 m-auto">
         <form @submit.prevent="submitForm">
             <h1>Inscription</h1>
@@ -61,6 +65,7 @@ const submitForm = async () => {
             <p class="mb-2"><RouterLink to="login">J'ai déjà un compte</RouterLink></p>
             <button type="submit" :disabled="authStore.isSubmitting" class="btn btn-dark w-100">M'inscrire</button>
             <br>
+            <!-- need to transform this into Toast -->
             <ul
             v-if="errorMessage"
             v-for="error in errorMessage" 

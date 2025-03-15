@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
-import axios from "axios";
+import api from "../axios.js";
 
 const initialFilters = {
     search: '',
@@ -36,7 +36,7 @@ export const useFilterStore = defineStore('filters', () => {
     async function fetchCards(url = null) {
         isLoading.value = true
         try {
-            const response = await axios.get(url || `/cards/?${getQueryString.value}`);
+            const response = await api.get(url || `/cards/?${getQueryString.value}`);
             count.value = response.data.count
             nextPage.value = response.data.next
             previousPage.value = response.data.previous

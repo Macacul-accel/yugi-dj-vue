@@ -9,6 +9,7 @@ const deckStore = useDeckStore();
 onMounted(() => {
   deckStore.getDecks();
 });
+// add danger toast to confirm deleted deck
 </script>
 
 <template>

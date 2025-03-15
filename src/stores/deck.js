@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import axios from 'axios';
+import api from "../axios.js";
 import { useRouter } from "vue-router";
 
 export const useDeckStore = defineStore('decks', () => {
@@ -56,9 +56,7 @@ export const useDeckStore = defineStore('decks', () => {
 
     async function getDecks() {
         try {
-            const response = await axios.get('/decks/',
-                {headers: {'Authorization': `Token ${localStorage.getItem('token')}`}
-            });
+            const response = await api.get('/decks/');
             decks.value = response.data.results
         } catch(error) {
             if (error.response.status === 401) {
@@ -68,10 +66,9 @@ export const useDeckStore = defineStore('decks', () => {
     }
     async function createDeck() {
         try {
-            const response = await axios.post('/decks/',
+            const response = await api.post('/decks/',
                 {name: `Nouveau deck (${deckNumber.value})`},
-                {headers: {'Authorization': `Token ${localStorage.getItem('token')}`}
-            });
+            );
             deckId.value = response.data.id
             localStorage.setItem('deckId', response.data.id)
             deckName.value = response.data.name
@@ -88,10 +85,8 @@ export const useDeckStore = defineStore('decks', () => {
         try {
             deckId.value = id
             localStorage.setItem('deckId', id)
-            const response = await axios.get(`/decks/${id}/`,
-                {headers: {'Authorization': `Token ${localStorage.getItem('token')}`}
-            })
-            console.log(response.data)
+            const response = await api.get(`/decks/${id}/`)
+
             deckName.value = response.data.name
             localStorage.setItem('deckName', response.data.name)
             mainCards.value = response.data.main_cards
@@ -120,9 +115,7 @@ export const useDeckStore = defineStore('decks', () => {
                 name: name,
             }
             console.log(deckData)
-            const response = await axios.put(`/decks/${id}/`, deckData,
-                {headers: {'Authorization': `Token ${localStorage.getItem('token')}`}
-            });
+            const response = await api.put(`/decks/${id}/`, deckData);
 
             deckId.value = response.data.id
             localStorage.setItem('deckId', response.data.id)
@@ -135,8 +128,8 @@ export const useDeckStore = defineStore('decks', () => {
     }
     async function deleteDeck(id = localStorage.getItem('deckId')) {
         try {
-            const response = await axios.delete(`/decks/${id}/`,
-            {headers: {'Authorization': `Token ${localStorage.getItem('token')}`}});
+            const response = await api.delete(`/decks/${id}/`);
+
             localStorage.removeItem('deckId')
             localStorage.removeItem('deckName')
             if (response.status === 204) {

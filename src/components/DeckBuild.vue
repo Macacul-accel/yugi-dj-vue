@@ -17,10 +17,12 @@ const decrementCard = (card) => deckStore.decrement(card);
 
 const updateMyDeck = () => {
   deckStore.updateDeck(deckName.value, mainCards.value, extraCards.value);
+  // return toast message for BuildDeckView
 };
 const delecteCurrentDeck = () => {
   if (confirm("Voulez-vous vraiment supprimer le deck ?")) {
     deckStore.deleteDeck();
+    // return toast message to DeckView
   }
 };
 </script>

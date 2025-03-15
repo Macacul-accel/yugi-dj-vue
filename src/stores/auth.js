@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import api from "../axios.js";
 
 export const useAuthStore = defineStore('auth', () => {
     const user = ref(localStorage.getItem('user') || null);
@@ -12,7 +12,7 @@ export const useAuthStore = defineStore('auth', () => {
     async function login(formData) {
         isSubmitting.value = true
         try {
-            const response = await axios.post('/login/', formData);
+            const response = await api.post('/login/', formData);
 
             if (response.data.token) {
                 token.value = response.data.token
@@ -35,7 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
     async function register(formData) {
         isSubmitting.value = true
         try {
-            const response = await axios.post('/register/', formData);
+            const response = await api.post('/register/', formData);
             if (response.status === 201) {
                 errorMessage.value = []
                 return true
@@ -51,7 +51,7 @@ export const useAuthStore = defineStore('auth', () => {
     async function logout() {
         isSubmitting.value = true
         try {
-            const response = await axios.post('/logout/', {}, {headers: {'Authorization': `Token ${token.value}`}});
+            const response = await api.post('/logout/');
 
             if (response.status === 200) {
                 user.value = null
