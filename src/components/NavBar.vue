@@ -1,15 +1,17 @@
 <script setup>
 import { Toast } from 'bootstrap';
 import { useAuthStore } from '../stores/auth';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
+const router = useRouter();
 
 const toLogOut = async () => {
     const logOut = await authStore.logout()
 
     if (logOut) {
         const toast = new Toast(document.getElementById('logoutToast'));
+        router.push('/')
         toast.show()
     }
 }
