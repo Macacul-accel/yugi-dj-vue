@@ -10,8 +10,6 @@ const deckStore = useDeckStore();
 onMounted(() => {
   deckStore.getDeckInfo();
 });
-// add success toast on update 
-// add danger toast to indicate limit (main 60, extra 15)
 </script>
 
 <template>

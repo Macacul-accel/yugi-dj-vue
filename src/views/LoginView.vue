@@ -1,5 +1,7 @@
 <script setup>
+import { Toast } from 'bootstrap';
 import InputField from '../components/InputField.vue'
+import ToastMessage from '../components/ToastMessage.vue';
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js';
@@ -19,11 +21,11 @@ const submitForm = async () => {
 
     const loggedIn = await authStore.login(formData);
     if (!loggedIn) {
-        // transform into danger toast
         errorMessage.value = authStore.errorMessage
+        const toast = new Toast(document.getElementById('errorToast'), {delay: 2000});
+        toast.show()
     } else {
         router.push('/')
-        // add success toast
     }
 }
 </script>
@@ -57,12 +59,11 @@ const submitForm = async () => {
             </div>
             <p class="mb-2"><RouterLink to="/register">Je n'ai pas encore de compte</RouterLink></p>
             <button type="submit" :disabled="authStore.isSubmitting" class="btn btn-dark w-100">Me connecter</button>
-            <br>
-            <!-- need to transform this into Toast -->
-            <ul
-            v-if="errorMessage"
-            class="text-danger"
-            >{{ errorMessage }}</ul>
         </form>
+        <ToastMessage
+            toastId="errorToast"
+            toastColor="text-bg-danger"
+            :toastMsg="errorMessage"
+        />
     </main>
 </template>

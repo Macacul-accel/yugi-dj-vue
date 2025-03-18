@@ -1,7 +1,13 @@
 <script setup>
+import { Toast } from 'bootstrap';
+import ToastMessage from './ToastMessage.vue';
 import { useDeckStore } from "../stores/deck";
 import { storeToRefs } from "pinia";
 
+const showToast = (id) => {
+  const toast = new Toast(document.getElementById(id), {delay: 2000})
+  toast.show()
+};
 const deckStore = useDeckStore();
 const {
   deckName,
@@ -12,17 +18,26 @@ const {
   mainDeckSize,
   extraDeckSize,
 } = storeToRefs(deckStore);
-const incrementCard = (card) => deckStore.increment(card);
+const incrementCard = (card) => {
+  const success = deckStore.increment(card);
+  if (!success) {
+    showToast('limitToast')
+  } else {
+    showToast('addToast')
+}};
 const decrementCard = (card) => deckStore.decrement(card);
 
-const updateMyDeck = () => {
-  deckStore.updateDeck(deckName.value, mainCards.value, extraCards.value);
-  // return toast message for BuildDeckView
-};
+const updateMyDeck = async () => {
+  const success = await deckStore.updateDeck(deckName.value, mainCards.value, extraCards.value);
+  if (!success) {
+    showToast('updateFailToast')
+  } else {
+    showToast('updatedDeckToast')
+}};
 const delecteCurrentDeck = () => {
   if (confirm("Voulez-vous vraiment supprimer le deck ?")) {
     deckStore.deleteDeck();
-    // return toast message to DeckView
+    showToast('deletedDeckToast')
   }
 };
 </script>
@@ -34,10 +49,10 @@ const delecteCurrentDeck = () => {
       <input v-model="deckName" @change="updateMyDeck" class="form-control text-center" />
     </div>
     <div class="row my-2 px-3 justify-content-around">
-      <button class="col-4 btn btn-light fw-bold" @click="selectedDeck = 'Main'">
+      <button class="col-3 btn btn-light fw-bold" @click="selectedDeck = 'Main'">
         Main deck ({{ mainDeckSize }})
       </button>
-      <button class="col-4 btn btn-light fw-bold" @click="selectedDeck = 'Extra'">
+      <button class="col-3 btn btn-light fw-bold" @click="selectedDeck = 'Extra'">
         Extra deck ({{ extraDeckSize }})
       </button>
       <button class="col-4 btn btn-success" @click="updateMyDeck">
@@ -52,7 +67,9 @@ const delecteCurrentDeck = () => {
             <span class="text-center my-1">{{ card.card_name }}</span>
             <img
               :src="card.card_image_url || card.image_url || '../assets/default.jpg'"
-              class="card-img"
+              loading="lazy"
+              width="270px"
+              height="370px"
             />
           </div>
           <div class="d-flex justify-content-around mt-2">
@@ -69,6 +86,31 @@ const delecteCurrentDeck = () => {
       </button>
     </div>
   </div>
+  <ToastMessage
+    toastId="updatedDeckToast"
+    toastColor="text-bg-success"
+    toastMsg="Deck mis à jour"
+  />
+  <ToastMessage
+    toastId="updateFailToast"
+    toastColor="text-bg-danger"
+    toastMsg="Trop de cartes dans le deck"
+  />
+  <ToastMessage
+    toastId="deletedDeckToast"
+    toastColor="text-bg-danger"
+    toastMsg="Deck supprimé"
+  />
+  <ToastMessage
+    toastId="limitToast"
+    toastColor="text-bg-danger"
+    toastMsg="Nombre de cartes maximum atteint"
+  />
+  <ToastMessage
+    toastId="addToast"
+    toastColor="text-bg-success"
+    toastMsg="Carte ajouté au deck"
+  />
 </template>
 
 <style scoped>

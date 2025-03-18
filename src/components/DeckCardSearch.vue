@@ -1,4 +1,5 @@
 <script setup>
+import { Toast } from 'bootstrap';
 import FiltersList from "./FiltersList.vue";
 import CardsPagination from "./CardsPagination.vue";
 import { useFilterStore } from "../stores/filters";
@@ -6,6 +7,11 @@ import { useDeckStore } from "../stores/deck";
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { onMounted } from "vue";
+
+const showToast = (id) => {
+  const toast = new Toast(document.getElementById(id), {delay: 2000})
+  toast.show()
+};
 
 const filtersStore = useFilterStore();
 const { cards, isLoading, filters } = storeToRefs(filtersStore);
@@ -17,8 +23,13 @@ const selectedCard = ref(null);
 const selectCard = (card) => {
   selectedCard.value = card;
 };
-const incrementCard = (card) => deckStore.increment(card);
-const decrementCard = (card) => deckStore.decrement(card);
+const incrementCard = (card) => {
+  const success = deckStore.increment(card);
+  if (!success) {
+    showToast('limitToast')
+  } else {
+    showToast('addToast')
+}};
 onMounted(() => {
   filtersStore.fetchCards();
 });
@@ -89,18 +100,34 @@ onMounted(() => {
     <div v-else class="scroll-container">
       <div class="row row-cols-md-4 row-cols-1 g-4">
         <div v-for="card in cards" :key="card.id">
-          <div class="card-wrapper col d-flex flex-column" @click="selectCard(card)">
-            <span class="text-center my-1">{{ card.name }}</span>
-            <img :src="card.image_url || '../assets/default.jpg'" class="card-img" />
+          <div class="card-wrapper col d-flex flex-column">
+              <span class="text-center my-1">{{ card.name }}</span>
+            <a href="#" @click="selectCard(card)">
+              <img
+                :src="card.image_url || '../assets/default.jpg'" 
+                loading="lazy"
+                width="270px"
+                height="370px"
+              />
+            </a>
           </div>
           <div class="d-flex justify-content-around mt-2">
-            <button class="col-4 btn btn-danger" @click="decrementCard(card)">-</button>
             <button class="col-4 btn btn-success" @click="incrementCard(card)">+</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <ToastMessage
+    toastId="limitToast"
+    toastColor="text-bg-danger"
+    toastMsg="Nombre de cartes maximum atteint"
+  />
+  <ToastMessage
+    toastId="addToast"
+    toastColor="text-bg-success"
+    toastMsg="Carte ajouté au deck"
+  />
 </template>
 
 <style scoped>
@@ -129,7 +156,9 @@ onMounted(() => {
 }
 .card-img {
   width: 100%;
+  max-width: 270px;
   height: auto;
+  max-height: 370px;
   border-radius: 8px;
 }
 </style>

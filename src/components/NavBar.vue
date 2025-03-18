@@ -2,6 +2,7 @@
 import { Toast } from 'bootstrap';
 import { useAuthStore } from '../stores/auth';
 import { RouterLink, useRouter } from 'vue-router';
+import ToastMessage from './ToastMessage.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -38,7 +39,12 @@ const toLogOut = async () => {
             </nav>
         </div>
     </header>
-    <div class="position-fixed bottom-0 end-0 p-3">
+    <ToastMessage
+        toastId="logoutToast"
+        toastColor="text-bg-success"
+        toastMsg="Déconnecté"
+    />
+    <!-- <div class="position-fixed bottom-0 end-0 p-3">
         <div id="logoutToast" class="toast text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
@@ -47,7 +53,7 @@ const toLogOut = async () => {
                 <button type="button" class="btn-close button close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
-    </div>
+    </div> -->
 </template>
 
 <style scoped>

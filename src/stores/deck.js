@@ -30,16 +30,26 @@ export const useDeckStore = defineStore('decks', () => {
 
     function increment(card) {
         const cardPosition = card.is_extra ? extraCards.value : mainCards.value;
+        const maxLimit = card.is_extra ? 15 : 60;
+        const deckSize = card.is_extra ? extraDeckSize.value : mainDeckSize.value;
+
+        if (deckSize === maxLimit) {
+            return false
+        }
+
         const found = cardPosition.find(c => c.id === card.id);
         if (found && found.quantity < 3) {
             found.quantity++
+            return true
         } else if (!found) {
             cardPosition.push({
                 id: card.id,
                 card_name: card.name,
                 card_image_url: card.image_url,
-                quantity: 1
+                quantity: 1,
+                is_extra: card.is_extra
             })
+            return true
         }
     }
     function decrement(card) {
@@ -119,10 +129,13 @@ export const useDeckStore = defineStore('decks', () => {
 
             deckId.value = response.data.id
             localStorage.setItem('deckId', response.data.id)
+            return true
 
         } catch(error) {
             if (error.response.status === 401) {
                 router.push('/login')
+            } else if (error.response.status === 400) {
+                return false
             }
         }
     }
